@@ -1,0 +1,3 @@
+# Fișierele text se salvează cu LF, ca Prettier să dea același rezultat pe
+# Windows și pe GitHub.
+* text=auto eol=lf

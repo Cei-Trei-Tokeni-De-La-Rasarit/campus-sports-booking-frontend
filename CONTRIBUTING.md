@@ -29,4 +29,16 @@ La fiecare pull request rulează, pe GitHub, verificările de mai jos. Un pull r
 | Verificare | Ce verifică |
 |---|---|
 | Nume branch | numele branch-ului respectă convenția de mai sus |
-| ESLint și Prettier | stilul codului JavaScript și React, conform paginii „Coding style frontend” (se adaugă prin KAN-80) |
+| ESLint și Prettier | stilul codului JavaScript și React, conform paginii „Coding style frontend” (`.github/workflows/stil-cod.yml`) |
+
+## Stilul codului
+
+Regulile sunt în `eslint.config.js` (ESLint) și `.prettierrc` (Prettier). Înainte de commit:
+
+```powershell
+npm install
+npm run format
+npm run lint
+```
+
+`npm run lint:fix` repară automat ce se poate; restul erorilor se corectează manual. Avertismentele sunt tratate ca erori.

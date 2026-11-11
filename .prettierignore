@@ -1,0 +1,6 @@
+dist/
+coverage/
+package-lock.json
+# Documentația (README, CONTRIBUTING, șablonul de PR) nu e cod; Prettier ar
+# strica rândurile goale lăsate intenționat în șablonul de pull request.
+*.md

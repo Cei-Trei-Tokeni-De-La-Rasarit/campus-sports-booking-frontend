@@ -1,0 +1,25 @@
+/* Culorile și fontul din designul Figma, folosite în toată aplicația. */
+:root {
+  /* Albastrul principal: bara de navigare, butoanele principale, linkurile. */
+  --color-primary: #1f3a68;
+  /* Fundalul butoanelor secundare (de ex. „Cont nou”). */
+  --color-primary-light: #e6ecf5;
+  /* Galbenul care subliniază pagina activă din meniu. */
+  --color-accent: #f2c94c;
+  /* Roșul pentru notificări și erori. */
+  --color-error: #e5484d;
+
+  --color-background: #f4f6fa;
+  --color-surface: #ffffff;
+  --color-input-background: #f7f9fc;
+
+  --color-text: #16213a;
+  --color-text-muted: #4b5565;
+  --color-text-placeholder: #6b7280;
+  --color-text-on-primary: #ffffff;
+
+  --color-border: #dbe1ea;
+  --color-border-input: #e1e6ee;
+
+  --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}

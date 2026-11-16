@@ -52,7 +52,7 @@ export function AuthProvider({children}) {
       setUser(null);
       setSessionExpired(true);
       navigate('/autentificare', {
-        state: {from: window.location.pathname},
+        state: {from: window.location.pathname + window.location.search},
         replace: true,
       });
     });

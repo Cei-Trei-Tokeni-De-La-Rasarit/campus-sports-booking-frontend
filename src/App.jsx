@@ -1,4 +1,4 @@
-import {Route, Routes} from 'react-router';
+import {Navigate, Route, Routes} from 'react-router';
 
 import {RequireAuth} from './auth/RequireAuth.jsx';
 import {Header} from './components/Header.jsx';
@@ -6,7 +6,6 @@ import {BookingPage} from './pages/BookingPage.jsx';
 import {CalendarPage} from './pages/CalendarPage.jsx';
 import {CatalogPage} from './pages/CatalogPage.jsx';
 import {FacilitiesPage} from './pages/FacilitiesPage.jsx';
-import {HomePage} from './pages/HomePage.jsx';
 import {LoginPage} from './pages/LoginPage.jsx';
 import {MyBookingsPage} from './pages/MyBookingsPage.jsx';
 
@@ -19,7 +18,8 @@ export function App() {
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {/* Pagina de start este catalogul. */}
+        <Route path="/" element={<Navigate to="/catalog" replace />} />
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/autentificare" element={<LoginPage />} />
         <Route

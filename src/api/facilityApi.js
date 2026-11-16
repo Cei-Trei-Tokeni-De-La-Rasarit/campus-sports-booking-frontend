@@ -4,11 +4,12 @@ import {request} from './request.js';
 const FACILITIES_PATH = '/facilitati';
 
 /**
- * Întoarce lista tuturor facilităților.
+ * Întoarce toate facilitățile, inclusiv cele în mentenanță sau inactive.
+ * Doar pentru manager și administrator (pagina de administrare).
  * @return {Promise<Array<Object>>}
  */
-export async function listFacilities() {
-  return request(FACILITIES_PATH);
+export async function listAllFacilities() {
+  return request(`${FACILITIES_PATH}/toate`);
 }
 
 /**

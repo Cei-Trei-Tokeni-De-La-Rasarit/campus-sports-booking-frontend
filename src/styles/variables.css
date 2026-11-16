@@ -28,6 +28,10 @@
   --color-busy-background: #fde2e1;
   --color-busy-border: #f5a3a0;
   --color-busy-text: #b42318;
+  /* Intervalele blocate pentru mentenanță (galben). */
+  --color-blocked-background: #fef0c7;
+  --color-blocked-border: #f8c77e;
+  --color-blocked-text: #b54708;
 
   --color-border: #dbe1ea;
   --color-border-input: #e1e6ee;

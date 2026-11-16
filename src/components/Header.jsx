@@ -9,7 +9,8 @@ export function Header() {
         <NavLink to="/catalog" className="header-link">
           Catalog
         </NavLink>
-        <NavLink to="/facilitati" className="header-link">
+        {/* end: nu marca „Facilități” activ și pe paginile de calendar. */}
+        <NavLink to="/facilitati" end className="header-link">
           Facilități
         </NavLink>
       </nav>

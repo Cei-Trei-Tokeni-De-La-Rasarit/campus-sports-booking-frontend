@@ -6,6 +6,9 @@ export function Header() {
     <header className="header">
       <span className="header-logo">CAMPUS SPORT</span>
       <nav className="header-nav">
+        <NavLink to="/catalog" className="header-link">
+          Catalog
+        </NavLink>
         <NavLink to="/facilitati" className="header-link">
           Facilități
         </NavLink>

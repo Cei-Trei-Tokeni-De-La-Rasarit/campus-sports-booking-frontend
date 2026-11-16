@@ -18,6 +18,17 @@
   --color-text-placeholder: #6b7280;
   --color-text-on-primary: #ffffff;
 
+  /* Fundalul locului pentru fotografie din cardurile catalogului. */
+  --color-surface-muted: #eef1f6;
+
+  /* Etichetele „Liber azi” (verde) și „Ocupat azi” (roșu). */
+  --color-free-background: #dcfce7;
+  --color-free-border: #86efac;
+  --color-free-text: #15803d;
+  --color-busy-background: #fde2e1;
+  --color-busy-border: #f5a3a0;
+  --color-busy-text: #b42318;
+
   --color-border: #dbe1ea;
   --color-border-input: #e1e6ee;
 

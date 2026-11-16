@@ -41,6 +41,25 @@ export async function listFacilities() {
 }
 
 /**
+ * Întoarce catalogul: facilitățile active care respectă filtrele date.
+ * Filtrele goale (text gol, `false`, lipsă) nu se trimit la server.
+ * @param {{cautare: (string|undefined), sport: (string|undefined),
+ *     capacitate_min: (number|undefined),
+ *     disponibile_azi: (boolean|undefined)}} filters
+ * @return {Promise<Array<Object>>}
+ */
+export async function listCatalog(filters = {}) {
+  const params = new URLSearchParams();
+  for (const [name, value] of Object.entries(filters)) {
+    if (value !== undefined && value !== '' && value !== false) {
+      params.set(name, String(value));
+    }
+  }
+  const query = params.toString();
+  return request(query ? `${FACILITIES_URL}?${query}` : FACILITIES_URL);
+}
+
+/**
  * Adaugă o facilitate nouă și o întoarce, cu id-ul primit de la server.
  * @param {Object} facility
  * @return {Promise<Object>}

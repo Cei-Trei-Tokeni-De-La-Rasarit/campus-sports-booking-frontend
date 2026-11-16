@@ -3,14 +3,18 @@ import {useEffect, useState} from 'react';
 import {
   createFacility,
   deleteFacility,
-  listFacilities,
+  listAllFacilities,
   updateFacility,
 } from '../api/facilityApi.js';
+import {useAuth} from '../auth/AuthContext.jsx';
 import {FacilityCard} from '../components/FacilityCard.jsx';
 import {FacilityForm} from '../components/FacilityForm.jsx';
 
 /** Pagina cu lista facilităților și operațiile de adăugare, editare, ștergere. */
 export function FacilitiesPage() {
+  const {user} = useAuth();
+  // Doar administratorul adaugă și șterge săli; managerul doar le editează.
+  const isAdmin = user?.rol === 'administrator';
   const [facilities, setFacilities] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -20,14 +24,14 @@ export function FacilitiesPage() {
   const [form, setForm] = useState(null);
 
   useEffect(() => {
-    listFacilities()
+    listAllFacilities()
       .then(setFacilities)
       .catch((loadError) => setError(loadError.message))
       .finally(() => setIsLoading(false));
   }, []);
 
   async function reloadFacilities() {
-    setFacilities(await listFacilities());
+    setFacilities(await listAllFacilities());
   }
 
   async function runOperation(operation, successMessage) {
@@ -84,7 +88,7 @@ export function FacilitiesPage() {
     <main className="page">
       <div className="page-header">
         <h1>Facilități sportive</h1>
-        {!form && (
+        {!form && isAdmin && (
           <button
             type="button"
             className="button button-primary"
@@ -129,7 +133,7 @@ export function FacilitiesPage() {
             facility={facility}
             disabled={isSaving}
             onEdit={openForm}
-            onDelete={handleDelete}
+            onDelete={isAdmin ? handleDelete : null}
           />
         ))}
       </div>

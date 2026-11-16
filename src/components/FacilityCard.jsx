@@ -10,7 +10,8 @@ const STATUS_LABELS = {
  * @param {Object} props.facility
  * @param {boolean} props.disabled Dacă butoanele sunt blocate (cerere în curs).
  * @param {function(Object): void} props.onEdit
- * @param {function(Object): void} props.onDelete
+ * @param {?function(Object): void} props.onDelete Fără ea (null), butonul
+ *     „Șterge” nu apare (de exemplu, pentru manager).
  */
 export function FacilityCard({facility, disabled, onEdit, onDelete}) {
   return (
@@ -42,14 +43,16 @@ export function FacilityCard({facility, disabled, onEdit, onDelete}) {
         >
           Editează
         </button>
-        <button
-          type="button"
-          className="button button-danger"
-          onClick={() => onDelete(facility)}
-          disabled={disabled}
-        >
-          Șterge
-        </button>
+        {onDelete && (
+          <button
+            type="button"
+            className="button button-danger"
+            onClick={() => onDelete(facility)}
+            disabled={disabled}
+          >
+            Șterge
+          </button>
+        )}
       </div>
     </article>
   );

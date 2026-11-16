@@ -23,6 +23,11 @@ export function Header() {
         <NavLink to="/catalog" className="header-link">
           Catalog
         </NavLink>
+        {user && (
+          <NavLink to="/rezervari" className="header-link">
+            Rezervările mele
+          </NavLink>
+        )}
         {user && FACILITY_ADMIN_ROLES.includes(user.rol) && (
           // end: nu marca „Facilități” activ și pe paginile de calendar.
           <NavLink to="/facilitati" end className="header-link">

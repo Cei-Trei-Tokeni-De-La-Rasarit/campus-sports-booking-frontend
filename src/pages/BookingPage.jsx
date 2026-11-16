@@ -126,9 +126,14 @@ export function BookingPage() {
             {formatTime(slot.ora_sfarsit)}.
           </p>
         </div>
-        <Link to={calendarLink} className="button button-primary booking-done">
-          Înapoi la calendar
-        </Link>
+        <div className="booking-actions">
+          <Link to="/rezervari" className="button button-primary">
+            Vezi rezervările mele
+          </Link>
+          <Link to={calendarLink} className="button booking-back">
+            Înapoi la calendar
+          </Link>
+        </div>
       </main>
     );
   }

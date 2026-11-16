@@ -833,6 +833,74 @@
   text-decoration: none;
 }
 
+/* Rezervările mele (ecranul D-rezervarile-mele din Figma) */
+.my-bookings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 60px 48px;
+}
+
+.my-bookings-page h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.my-bookings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.my-bookings-section h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.my-bookings-section .empty-state {
+  margin: 0;
+}
+
+.my-booking {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+  list-style: none;
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.my-booking-text {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.my-booking-text a {
+  color: inherit;
+}
+
+.my-booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.availability-done {
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
 @media (max-width: 1000px) {
   .booking-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -848,7 +916,8 @@
 @media (max-width: 640px) {
   .catalog-page,
   .calendar-page,
-  .booking-page {
+  .booking-page,
+  .my-bookings-page {
     padding: 24px 16px;
   }
 

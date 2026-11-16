@@ -27,9 +27,10 @@ export async function register(account) {
 }
 
 /**
- * Întoarce utilizatorul căruia îi aparține token-ul salvat.
+ * Întoarce utilizatorul căruia îi aparține token-ul salvat. Un token expirat
+ * dă eroare 401, pe care o tratează cine apelează funcția.
  * @return {Promise<Object>}
  */
 export async function getCurrentUser() {
-  return request('/utilizatori/eu');
+  return request('/utilizatori/eu', {skipAuthHandlers: true});
 }

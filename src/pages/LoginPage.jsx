@@ -12,7 +12,7 @@ const TABS = [
 
 /** Pagina de autentificare, cu tab-urile „Autentificare” și „Cont nou”. */
 export function LoginPage() {
-  const {user, signIn, signUp} = useAuth();
+  const {user, sessionExpired, signIn, signUp} = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [tab, setTab] = useState('login');
@@ -37,6 +37,12 @@ export function LoginPage() {
     <main className="auth-page">
       <section className="auth-card" aria-labelledby="auth-title">
         <h1 id="auth-title">Autentificare în Campus</h1>
+
+        {sessionExpired && (
+          <p className="alert alert-info" role="status">
+            Sesiunea a expirat. Autentifică-te din nou.
+          </p>
+        )}
 
         <div className="auth-tabs" role="tablist">
           {TABS.map((item) => (

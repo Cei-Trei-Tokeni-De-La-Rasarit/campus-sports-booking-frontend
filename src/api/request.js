@@ -5,8 +5,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 // Cheia sub care păstrăm token-ul în browser (localStorage).
 const TOKEN_KEY = 'campus-sports-token';
 
-// Funcția chemată când serverul spune că token-ul nu mai e valid (401).
+// Funcțiile chemate când serverul spune că token-ul nu mai e valid (401)
+// sau că rolul utilizatorului nu permite acțiunea (403).
 let handleUnauthorized = null;
+let handleForbidden = null;
 
 /** O eroare primită de la server, împreună cu codul HTTP (0 = fără răspuns). */
 export class ApiError extends Error {
@@ -66,23 +68,38 @@ export function setUnauthorizedHandler(handler) {
 }
 
 /**
+ * Setează ce se întâmplă când serverul răspunde 403 la o cerere cu token
+ * (de exemplu, rolul utilizatorului a fost schimbat între timp).
+ * @param {?function(): void} handler
+ */
+export function setForbiddenHandler(handler) {
+  handleForbidden = handler;
+}
+
+/**
  * Trimite o cerere către backend și întoarce răspunsul JSON. Dacă există un
  * token, îl trimite în header-ul Authorization. Erorile primite de la API
  * (formatul {"mesaj": "..."}) sunt aruncate ca ApiError, cu mesajul lor.
  * @param {string} path Adresa din API, de exemplu „/facilitati”.
- * @param {RequestInit} options
+ * @param {RequestInit & {skipAuthHandlers: (boolean|undefined)}} options
+ *     Cu skipAuthHandlers, un 401 sau 403 nu mai cheamă funcțiile de mai sus
+ *     (de exemplu, la verificarea token-ului salvat, la pornire).
  * @return {Promise<?Object>}
  */
 export async function request(path, options = {}) {
+  const {skipAuthHandlers = false, ...fetchOptions} = options;
   const token = getToken();
-  const headers = {'Content-Type': 'application/json', ...options.headers};
+  const headers = {
+    'Content-Type': 'application/json',
+    ...fetchOptions.headers,
+  };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
   let response;
   try {
-    response = await fetch(`${API_URL}${path}`, {...options, headers});
+    response = await fetch(`${API_URL}${path}`, {...fetchOptions, headers});
   } catch {
     throw new ApiError(
       'Serverul nu răspunde. Verifică dacă backend-ul este pornit.',
@@ -92,9 +109,13 @@ export async function request(path, options = {}) {
 
   if (!response.ok) {
     const data = await response.json().catch(() => null);
-    // Un 401 la o cerere cu token înseamnă că token-ul a expirat sau e greșit.
-    if (response.status === 401 && token && handleUnauthorized) {
-      handleUnauthorized();
+    if (token && !skipAuthHandlers) {
+      // 401: token-ul a expirat sau e greșit. 403: rolul nu mai permite.
+      if (response.status === 401 && handleUnauthorized) {
+        handleUnauthorized();
+      } else if (response.status === 403 && handleForbidden) {
+        handleForbidden();
+      }
     }
     throw new ApiError(
       data?.mesaj ?? `Eroare ${response.status} de la server.`,

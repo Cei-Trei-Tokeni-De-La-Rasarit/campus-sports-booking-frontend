@@ -23,7 +23,12 @@ export function RequireAuth({roles, children}) {
   }
   if (!user) {
     return (
-      <Navigate to="/autentificare" state={{from: location.pathname}} replace />
+      // Cu tot cu ?..., ca pagina să aibă aceleași date după autentificare.
+      <Navigate
+        to="/autentificare"
+        state={{from: location.pathname + location.search}}
+        replace
+      />
     );
   }
   if (roles && !roles.includes(user.rol)) {

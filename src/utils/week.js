@@ -63,6 +63,39 @@ export function formatDayMonth(date) {
 }
 
 /**
+ * Ora fără zero în față, ca în prototip: „09:00” devine „9:00”.
+ * @param {string} time
+ * @return {string}
+ */
+export function formatTime(time) {
+  const [hours, minutes] = time.split(':');
+  return `${Number(hours)}:${minutes}`;
+}
+
+/**
+ * Data unui slot („AAAA-LL-ZZ”) ca obiect Date, la ora 00:00 locală.
+ * @param {string} isoDate
+ * @return {Date}
+ */
+export function fromIsoDate(isoDate) {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/**
+ * Spune dacă slotul a început deja, după ceasul browserului.
+ * @param {Object} slot
+ * @param {Date} now
+ * @return {boolean}
+ */
+export function hasStarted(slot, now) {
+  const [hours, minutes] = slot.ora_start.split(':').map(Number);
+  const start = fromIsoDate(slot.data);
+  start.setHours(hours, minutes);
+  return start <= now;
+}
+
+/**
  * Perioada dintre două zile: „26 – 30 octombrie” sau, dacă lunile diferă,
  * „30 noiembrie – 4 decembrie”.
  * @param {Date} first

@@ -690,6 +690,155 @@
   border-radius: 8px;
 }
 
+/* Celulele libere din calendar duc la confirmarea rezervării. */
+.calendar-cell-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 108px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.calendar-cell-link:hover,
+.calendar-cell-link:focus-visible {
+  text-decoration: underline;
+}
+
+/* Confirmarea rezervării (ecranul 1-confirmare-rezervare din Figma) */
+.booking-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px 60px 48px;
+}
+
+.booking-title h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.booking-title p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.booking-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.booking-left .alert {
+  margin: 0;
+}
+
+.booking-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.booking-card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.booking-summary {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px 12px;
+  margin: 0;
+}
+
+.booking-summary dt {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.booking-summary dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.booking-free {
+  color: var(--color-free-text);
+}
+
+.booking-busy {
+  color: var(--color-busy-text);
+}
+
+.booking-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.booking-actions .button {
+  padding: 11px 36px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.booking-back {
+  color: var(--color-text);
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+}
+
+.booking-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-placeholder);
+}
+
+.booking-rules p {
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+
+.booking-accept {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.booking-accept input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+
+.booking-done {
+  align-self: flex-start;
+  padding: 11px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+@media (max-width: 1000px) {
+  .booking-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 1000px) {
   .catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -698,7 +847,8 @@
 
 @media (max-width: 640px) {
   .catalog-page,
-  .calendar-page {
+  .calendar-page,
+  .booking-page {
     padding: 24px 16px;
   }
 

@@ -1,26 +1,12 @@
-import {formatDayMonth, toIsoDate, weekdayName} from '../utils/week.js';
+import {Link} from 'react-router';
 
-/**
- * Ora fără zero în față, ca în prototip: „09:00” devine „9:00”.
- * @param {string} time
- * @return {string}
- */
-function formatTime(time) {
-  const [hours, minutes] = time.split(':');
-  return `${Number(hours)}:${minutes}`;
-}
-
-/**
- * Spune dacă slotul a început deja, după ceasul browserului.
- * @param {Object} slot
- * @param {Date} now
- * @return {boolean}
- */
-function hasStarted(slot, now) {
-  const [year, month, day] = slot.data.split('-').map(Number);
-  const [hours, minutes] = slot.ora_start.split(':').map(Number);
-  return new Date(year, month - 1, day, hours, minutes) <= now;
-}
+import {
+  formatDayMonth,
+  formatTime,
+  hasStarted,
+  toIsoDate,
+  weekdayName,
+} from '../utils/week.js';
 
 /**
  * Celula unui slot: culoarea și textul după stare.
@@ -47,7 +33,18 @@ function SlotCell({slot, now}) {
   if (hasStarted(slot, now)) {
     return <td className="calendar-cell-past">Încheiat</td>;
   }
-  return <td className="calendar-cell-free">Liber</td>;
+  // Un interval liber duce la pagina de confirmare a rezervării.
+  return (
+    <td className="calendar-cell-free">
+      <Link
+        to={`/facilitati/${slot.facilitate_id}/rezervare/${slot.id}?data=${slot.data}`}
+        className="calendar-cell-link"
+        aria-label={`Rezervă intervalul ${formatTime(slot.ora_start)} – ${formatTime(slot.ora_sfarsit)} din ${slot.data}`}
+      >
+        Liber
+      </Link>
+    </td>
+  );
 }
 
 /**

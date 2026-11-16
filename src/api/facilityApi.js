@@ -55,6 +55,16 @@ export async function listSlots(id, from, to) {
 }
 
 /**
+ * Întoarce regulamentul unei facilități: {facilitate_id, text}. Serverul
+ * răspunde 404 dacă facilitatea nu există sau nu are regulament.
+ * @param {(number|string)} id
+ * @return {Promise<Object>}
+ */
+export async function getRegulation(id) {
+  return request(`${FACILITIES_PATH}/${encodeURIComponent(id)}/regulament`);
+}
+
+/**
  * Adaugă o facilitate nouă și o întoarce, cu id-ul primit de la server.
  * @param {Object} facility
  * @return {Promise<Object>}

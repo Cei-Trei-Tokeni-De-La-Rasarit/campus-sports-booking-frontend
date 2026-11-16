@@ -2,6 +2,7 @@ import {Route, Routes} from 'react-router';
 
 import {RequireAuth} from './auth/RequireAuth.jsx';
 import {Header} from './components/Header.jsx';
+import {BookingPage} from './pages/BookingPage.jsx';
 import {CalendarPage} from './pages/CalendarPage.jsx';
 import {CatalogPage} from './pages/CatalogPage.jsx';
 import {FacilitiesPage} from './pages/FacilitiesPage.jsx';
@@ -29,6 +30,14 @@ export function App() {
           }
         />
         <Route path="/facilitati/:id/calendar" element={<CalendarPage />} />
+        <Route
+          path="/facilitati/:id/rezervare/:slotId"
+          element={
+            <RequireAuth>
+              <BookingPage />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </>
   );

@@ -1,43 +1,14 @@
 // Cererile către backend pentru facilități (/facilitati).
-const API_URL = import.meta.env.VITE_API_URL;
-const FACILITIES_URL = `${API_URL}/facilitati`;
+import {request} from './request.js';
 
-/**
- * Trimite o cerere către backend și întoarce răspunsul JSON. Erorile primite
- * de la API (formatul {"mesaj": "..."}) sunt aruncate ca Error, cu mesajul lor.
- * @param {string} url
- * @param {RequestInit} options
- * @return {Promise<?Object>}
- */
-async function request(url, options = {}) {
-  let response;
-  try {
-    response = await fetch(url, {
-      headers: {'Content-Type': 'application/json'},
-      ...options,
-    });
-  } catch {
-    throw new Error(
-      'Serverul nu răspunde. Verifică dacă backend-ul este pornit.',
-    );
-  }
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.mesaj ?? `Eroare ${response.status} de la server.`);
-  }
-  if (response.status === 204) {
-    return null;
-  }
-  return response.json();
-}
+const FACILITIES_PATH = '/facilitati';
 
 /**
  * Întoarce lista tuturor facilităților.
  * @return {Promise<Array<Object>>}
  */
 export async function listFacilities() {
-  return request(FACILITIES_URL);
+  return request(FACILITIES_PATH);
 }
 
 /**
@@ -56,7 +27,7 @@ export async function listCatalog(filters = {}) {
     }
   }
   const query = params.toString();
-  return request(query ? `${FACILITIES_URL}?${query}` : FACILITIES_URL);
+  return request(query ? `${FACILITIES_PATH}?${query}` : FACILITIES_PATH);
 }
 
 /**
@@ -65,7 +36,7 @@ export async function listCatalog(filters = {}) {
  * @return {Promise<Object>}
  */
 export async function getFacility(id) {
-  return request(`${FACILITIES_URL}/${encodeURIComponent(id)}`);
+  return request(`${FACILITIES_PATH}/${encodeURIComponent(id)}`);
 }
 
 /**
@@ -79,7 +50,7 @@ export async function getFacility(id) {
 export async function listSlots(id, from, to) {
   const params = new URLSearchParams({de_la: from, pana_la: to});
   return request(
-    `${FACILITIES_URL}/${encodeURIComponent(id)}/sloturi?${params}`,
+    `${FACILITIES_PATH}/${encodeURIComponent(id)}/sloturi?${params}`,
   );
 }
 
@@ -89,7 +60,7 @@ export async function listSlots(id, from, to) {
  * @return {Promise<Object>}
  */
 export async function createFacility(facility) {
-  return request(FACILITIES_URL, {
+  return request(FACILITIES_PATH, {
     method: 'POST',
     body: JSON.stringify(facility),
   });
@@ -102,7 +73,7 @@ export async function createFacility(facility) {
  * @return {Promise<Object>}
  */
 export async function updateFacility(id, facility) {
-  return request(`${FACILITIES_URL}/${id}`, {
+  return request(`${FACILITIES_PATH}/${id}`, {
     method: 'PUT',
     body: JSON.stringify(facility),
   });
@@ -114,5 +85,5 @@ export async function updateFacility(id, facility) {
  * @return {Promise<null>}
  */
 export async function deleteFacility(id) {
-  return request(`${FACILITIES_URL}/${id}`, {method: 'DELETE'});
+  return request(`${FACILITIES_PATH}/${id}`, {method: 'DELETE'});
 }

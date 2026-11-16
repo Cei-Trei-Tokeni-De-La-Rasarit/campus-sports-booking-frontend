@@ -403,6 +403,156 @@
   border-color: var(--color-busy-border);
 }
 
+.availability-blocked {
+  color: var(--color-blocked-text);
+  background-color: var(--color-blocked-background);
+  border-color: var(--color-blocked-border);
+}
+
+/* Calendarul unei facilități (ecranul C-calendar din Figma) */
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 60px 48px;
+}
+
+.calendar-title h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.calendar-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.calendar-subtitle p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.calendar-week-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.calendar-table-wrapper {
+  overflow-x: auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.calendar-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.calendar-table th,
+.calendar-table td {
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+/* Marginile exterioare le desenează deja chenarul tabelului. */
+.calendar-table tr > :first-child {
+  border-left: none;
+}
+
+.calendar-table tr > :last-child {
+  border-right: none;
+}
+
+.calendar-table thead tr:first-child > * {
+  border-top: none;
+}
+
+.calendar-table tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.calendar-table thead th {
+  height: 72px;
+  background-color: var(--color-surface-muted);
+}
+
+.calendar-table th {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.calendar-table tbody th {
+  width: 160px;
+  background-color: var(--color-surface-muted);
+}
+
+.calendar-time-column {
+  width: 160px;
+}
+
+.calendar-day-date {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.calendar-table td {
+  height: 110px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.calendar-cell-note {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.calendar-cell-free {
+  color: var(--color-free-text);
+  background-color: var(--color-free-background);
+}
+
+.calendar-cell-busy {
+  color: var(--color-busy-text);
+  background-color: var(--color-busy-background);
+}
+
+.calendar-cell-blocked {
+  color: var(--color-blocked-text);
+  background-color: var(--color-blocked-background);
+}
+
+.calendar-cell-past {
+  color: var(--color-text-placeholder);
+  background-color: var(--color-surface-muted);
+}
+
+.calendar-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-placeholder);
+}
+
 @media (max-width: 1000px) {
   .catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -410,7 +560,8 @@
 }
 
 @media (max-width: 640px) {
-  .catalog-page {
+  .catalog-page,
+  .calendar-page {
     padding: 24px 16px;
   }
 

@@ -60,6 +60,30 @@ export async function listCatalog(filters = {}) {
 }
 
 /**
+ * Întoarce o facilitate după id. Serverul răspunde 404 dacă nu există.
+ * @param {(number|string)} id
+ * @return {Promise<Object>}
+ */
+export async function getFacility(id) {
+  return request(`${FACILITIES_URL}/${encodeURIComponent(id)}`);
+}
+
+/**
+ * Întoarce sloturile unei facilități dintre două date (inclusiv capetele),
+ * fiecare cu starea `liber`, `rezervat` sau `blocat`.
+ * @param {(number|string)} id
+ * @param {string} from Prima zi, „AAAA-LL-ZZ”.
+ * @param {string} to Ultima zi, „AAAA-LL-ZZ”.
+ * @return {Promise<Array<Object>>}
+ */
+export async function listSlots(id, from, to) {
+  const params = new URLSearchParams({de_la: from, pana_la: to});
+  return request(
+    `${FACILITIES_URL}/${encodeURIComponent(id)}/sloturi?${params}`,
+  );
+}
+
+/**
  * Adaugă o facilitate nouă și o întoarce, cu id-ul primit de la server.
  * @param {Object} facility
  * @return {Promise<Object>}

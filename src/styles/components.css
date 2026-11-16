@@ -553,6 +553,137 @@
   color: var(--color-text-placeholder);
 }
 
+/* Contul din bara de sus */
+.header-account {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  font-size: 14px;
+}
+
+.header-button {
+  padding: 6px 14px;
+  font: inherit;
+  color: var(--color-text-on-primary);
+  background-color: transparent;
+  border: 1px solid var(--color-text-on-primary);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Autentificarea (ecranul A-autentificare din Figma) */
+/* Cardul stă în mijlocul ecranului, sub bara de sus (56 px), ca în Figma. */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 56px);
+  padding: 120px 16px 48px;
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 520px;
+  max-width: 100%;
+  padding: 40px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.auth-card h1 {
+  margin: 0;
+  font-size: 26px;
+  text-align: center;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background-color: var(--color-surface-muted);
+  border-radius: 10px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.auth-tab[aria-selected='true'] {
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-form .alert {
+  margin: 0;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-field input {
+  padding: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.auth-field input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.auth-field input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.field-error,
+.field-hint {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.field-error {
+  color: var(--color-error);
+}
+
+.field-hint {
+  color: var(--color-text-muted);
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 11px 20px;
+  border-radius: 8px;
+}
+
 @media (max-width: 1000px) {
   .catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -563,6 +694,15 @@
   .catalog-page,
   .calendar-page {
     padding: 24px 16px;
+  }
+
+  .auth-page {
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+
+  .auth-card {
+    padding: 24px;
   }
 
   .catalog-grid {

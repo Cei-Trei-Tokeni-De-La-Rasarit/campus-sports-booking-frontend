@@ -107,6 +107,11 @@
   background-color: var(--color-primary-light);
 }
 
+.alert-info {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
 .empty-state {
   color: var(--color-text-muted);
 }
@@ -633,7 +638,8 @@
   gap: 16px;
 }
 
-.auth-form .alert {
+.auth-form .alert,
+.auth-card > .alert {
   margin: 0;
 }
 

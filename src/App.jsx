@@ -8,6 +8,7 @@ import {CatalogPage} from './pages/CatalogPage.jsx';
 import {FacilitiesPage} from './pages/FacilitiesPage.jsx';
 import {HomePage} from './pages/HomePage.jsx';
 import {LoginPage} from './pages/LoginPage.jsx';
+import {MyBookingsPage} from './pages/MyBookingsPage.jsx';
 
 // Rolurile care pot administra facilitățile.
 const FACILITY_ADMIN_ROLES = ['manager', 'administrator'];
@@ -21,6 +22,14 @@ export function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/autentificare" element={<LoginPage />} />
+        <Route
+          path="/rezervari"
+          element={
+            <RequireAuth>
+              <MyBookingsPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/facilitati"
           element={

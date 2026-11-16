@@ -2,6 +2,15 @@
 import {request} from './request.js';
 
 /**
+ * Întoarce rezervările utilizatorului autentificat, ordonate după data și
+ * ora slotului. Fiecare are starea `confirmata`, `anulata` sau `finalizata`.
+ * @return {Promise<Array<Object>>}
+ */
+export async function listMyBookings() {
+  return request('/rezervari');
+}
+
+/**
  * Rezervă un slot pentru utilizatorul autentificat și întoarce rezervarea.
  * Serverul răspunde 409 dacă slotul nu mai e liber sau rezervarea încalcă o
  * regulă (suprapunere, maximum 3 rezervări active).

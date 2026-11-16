@@ -233,3 +233,194 @@
   color: var(--color-text-muted);
   background-color: var(--color-border);
 }
+
+/* Catalogul facilităților (ecranul B-catalog din Figma) */
+.catalog-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px 60px 48px;
+}
+
+.catalog-title h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.catalog-title p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.catalog-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.catalog-filter input,
+.catalog-filter select {
+  padding: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.catalog-filter input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+/* Săgeata din Figma (icon/sageata) în locul celei a browserului. */
+.catalog-filter select {
+  padding-right: 36px;
+  appearance: none;
+  background-image: url('../assets/icons/arrow-down.svg');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+  cursor: pointer;
+}
+
+.catalog-filter-search input {
+  width: 240px;
+}
+
+.catalog-filter-sport select {
+  width: 150px;
+}
+
+.catalog-filter-order select {
+  width: 170px;
+}
+
+.catalog-filter-capacity select {
+  width: 130px;
+}
+
+.catalog-filter-today {
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.catalog-filter-today input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.catalog-card-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 13px;
+  color: var(--color-text-placeholder);
+  background-color: var(--color-surface-muted);
+  border-radius: 8px;
+}
+
+.catalog-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catalog-card-title h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 18px;
+}
+
+.catalog-card-details {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.catalog-card-button {
+  display: block;
+  padding: 11px 20px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+/* Eticheta „Liber azi” / „Ocupat azi” */
+.availability {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid;
+  border-radius: 999px;
+}
+
+.availability-free {
+  color: var(--color-free-text);
+  background-color: var(--color-free-background);
+  border-color: var(--color-free-border);
+}
+
+.availability-busy {
+  color: var(--color-busy-text);
+  background-color: var(--color-busy-background);
+  border-color: var(--color-busy-border);
+}
+
+@media (max-width: 1000px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .catalog-page {
+    padding: 24px 16px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-filter,
+  .catalog-filter input,
+  .catalog-filter select {
+    width: 100%;
+  }
+}

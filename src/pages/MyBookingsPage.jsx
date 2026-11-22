@@ -1,9 +1,11 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {Link} from 'react-router';
 
-import {listMyBookings} from '../api/bookingApi.js';
+import {cancelBooking, listMyBookings} from '../api/bookingApi.js';
 import {getFacility} from '../api/facilityApi.js';
 import {
+  CANCELLATION_NOTICE_HOURS,
+  canBeCancelled,
   formatDayMonth,
   formatTime,
   fromIsoDate,
@@ -35,27 +37,107 @@ async function loadBookings() {
 }
 
 /**
- * O rezervare din listă: sala, ziua, intervalul și starea.
+ * Butoanele de anulare ale unei rezervări viitoare: întâi „Anulează”, apoi
+ * confirmarea. Dacă au rămas mai puțin de 24 de ore, doar un text explicativ.
+ * @param {Object} props
+ * @param {Object} props.booking
+ * @param {function(number): Promise<void>} props.onCancel
+ */
+function CancelActions({booking, onCancel}) {
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [error, setError] = useState(null);
+
+  if (!canBeCancelled(booking.slot, new Date())) {
+    return (
+      <p className="my-booking-hint">
+        Se poate anula până cu {CANCELLATION_NOTICE_HOURS} de ore înainte.
+      </p>
+    );
+  }
+
+  /** Trimite anularea; la eroare, mesajul serverului rămâne lângă butoane. */
+  async function handleConfirm() {
+    setIsCancelling(true);
+    setError(null);
+    try {
+      await onCancel(booking.id);
+    } catch (cancelError) {
+      setError(cancelError.message);
+      setIsCancelling(false);
+      setIsConfirming(false);
+    }
+  }
+
+  return (
+    <>
+      {isConfirming ? (
+        <div className="my-booking-actions">
+          <span className="my-booking-question">Sigur anulezi rezervarea?</span>
+          <button
+            type="button"
+            className="button button-danger"
+            disabled={isCancelling}
+            onClick={handleConfirm}
+          >
+            {isCancelling ? 'Se anulează…' : 'Da, anulează'}
+          </button>
+          <button
+            type="button"
+            className="button booking-back"
+            disabled={isCancelling}
+            onClick={() => setIsConfirming(false)}
+          >
+            Renunță
+          </button>
+        </div>
+      ) : (
+        <div className="my-booking-actions">
+          <button
+            type="button"
+            className="button booking-back"
+            onClick={() => setIsConfirming(true)}
+          >
+            Anulează (min. {CANCELLATION_NOTICE_HOURS} h înainte)
+          </button>
+        </div>
+      )}
+      {error && (
+        <p className="my-booking-error" role="alert">
+          {error}
+        </p>
+      )}
+    </>
+  );
+}
+
+/**
+ * O rezervare din listă: sala, ziua, intervalul și starea; rezervările
+ * viitoare au și butonul de anulare.
  * @param {Object} props
  * @param {Object} props.booking
  * @param {?Object} props.facility
+ * @param {?function(number): Promise<void>} props.onCancel
  */
-function BookingItem({booking, facility}) {
+function BookingItem({booking, facility, onCancel}) {
   const {slot} = booking;
   const day = fromIsoDate(slot.data);
   const badge = STATUS_BADGES[booking.stare];
   return (
     <li className="my-booking">
-      <span className="my-booking-text">
-        <Link to={`/facilitati/${slot.facilitate_id}/calendar`}>
-          {facility?.nume ?? 'Sală'}
-        </Link>
-        {'  |  '}
-        {weekdayName(day)}, {formatDayMonth(day)}
-        {'  |  '}
-        {formatTime(slot.ora_start)} – {formatTime(slot.ora_sfarsit)}
-      </span>
-      <span className={`availability ${badge.className}`}>{badge.label}</span>
+      <div className="my-booking-row">
+        <span className="my-booking-text">
+          <Link to={`/facilitati/${slot.facilitate_id}/calendar`}>
+            {facility?.nume ?? 'Sală'}
+          </Link>
+          {'  |  '}
+          {weekdayName(day)}, {formatDayMonth(day)}
+          {'  |  '}
+          {formatTime(slot.ora_start)} – {formatTime(slot.ora_sfarsit)}
+        </span>
+        <span className={`availability ${badge.className}`}>{badge.label}</span>
+      </div>
+      {onCancel && <CancelActions booking={booking} onCancel={onCancel} />}
     </li>
   );
 }
@@ -67,8 +149,10 @@ function BookingItem({booking, facility}) {
  * @param {Array<Object>} props.bookings
  * @param {Map} props.facilities
  * @param {React.ReactNode} props.empty
+ * @param {?function(number): Promise<void>} props.onCancel Doar pentru
+ *     rezervările care se pot anula.
  */
-function BookingSection({title, bookings, facilities, empty}) {
+function BookingSection({title, bookings, facilities, empty, onCancel}) {
   return (
     <section className="my-bookings-section" aria-label={title}>
       <h2>{title}</h2>
@@ -81,6 +165,7 @@ function BookingSection({title, bookings, facilities, empty}) {
               key={booking.id}
               booking={booking}
               facility={facilities.get(booking.slot.facilitate_id)}
+              onCancel={onCancel}
             />
           ))}
         </ul>
@@ -92,6 +177,7 @@ function BookingSection({title, bookings, facilities, empty}) {
 /** Pagina „Rezervările mele”: rezervările viitoare și istoricul. */
 export function MyBookingsPage() {
   const [result, setResult] = useState(null);
+  const [notice, setNotice] = useState(null);
 
   useEffect(() => {
     let isCurrent = true;
@@ -101,6 +187,27 @@ export function MyBookingsPage() {
     return () => {
       isCurrent = false;
     };
+  }, []);
+
+  // După anulare, lista se reîncarcă de la server: rezervarea trece în
+  // istoric cu starea „Anulată”.
+  const handleCancel = useCallback(async (bookingId) => {
+    try {
+      await cancelBooking(bookingId);
+      setNotice('Rezervarea a fost anulată. Intervalul este din nou liber.');
+    } catch (error) {
+      // 409: rezervarea fusese deja anulată (de exemplu, din alt tab), deci
+      // doar reîncărcăm lista. Celelalte erori rămân lângă butoane.
+      if (error.status !== 409) {
+        throw error;
+      }
+      setNotice('Rezervarea fusese deja anulată.');
+    }
+    try {
+      setResult(await loadBookings());
+    } catch (error) {
+      setResult({error: error.message});
+    }
   }, []);
 
   if (!result) {
@@ -133,10 +240,16 @@ export function MyBookingsPage() {
   return (
     <main className="my-bookings-page">
       <h1>Rezervările mele</h1>
+      {notice && (
+        <p className="alert alert-success" role="status">
+          {notice}
+        </p>
+      )}
       <BookingSection
         title="Rezervări viitoare"
         bookings={upcoming}
         facilities={result.facilities}
+        onCancel={handleCancel}
         empty={
           <>
             Nu ai rezervări viitoare.{' '}

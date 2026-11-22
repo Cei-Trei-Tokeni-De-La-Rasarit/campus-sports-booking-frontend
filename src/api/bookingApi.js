@@ -27,3 +27,14 @@ export async function createBooking(slotId, rulesAccepted) {
     }),
   });
 }
+
+/**
+ * Anulează o rezervare a utilizatorului autentificat. Serverul răspunde 400
+ * dacă au rămas mai puțin de 24 de ore până la începutul intervalului și 409
+ * dacă rezervarea e deja anulată.
+ * @param {number} bookingId
+ * @return {Promise<null>}
+ */
+export async function cancelBooking(bookingId) {
+  return request(`/rezervari/${bookingId}`, {method: 'DELETE'});
+}

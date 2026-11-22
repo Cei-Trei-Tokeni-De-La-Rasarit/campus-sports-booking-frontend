@@ -83,16 +83,40 @@ export function fromIsoDate(isoDate) {
 }
 
 /**
+ * Data și ora la care începe slotul, după ceasul browserului.
+ * @param {{data: string, ora_start: string}} slot
+ * @return {Date}
+ */
+function slotStart(slot) {
+  const [hours, minutes] = slot.ora_start.split(':').map(Number);
+  const start = fromIsoDate(slot.data);
+  start.setHours(hours, minutes);
+  return start;
+}
+
+/**
  * Spune dacă slotul a început deja, după ceasul browserului.
  * @param {Object} slot
  * @param {Date} now
  * @return {boolean}
  */
 export function hasStarted(slot, now) {
-  const [hours, minutes] = slot.ora_start.split(':').map(Number);
-  const start = fromIsoDate(slot.data);
-  start.setHours(hours, minutes);
-  return start <= now;
+  return slotStart(slot) <= now;
+}
+
+// Cu câte ore înainte de începutul intervalului se mai poate anula o
+// rezervare. Serverul verifică aceeași regulă.
+export const CANCELLATION_NOTICE_HOURS = 24;
+
+/**
+ * Spune dacă rezervarea slotului se mai poate anula: au rămas cel puțin
+ * 24 de ore până la începutul lui.
+ * @param {{data: string, ora_start: string}} slot
+ * @param {Date} now
+ * @return {boolean}
+ */
+export function canBeCancelled(slot, now) {
+  return slotStart(slot) - now >= CANCELLATION_NOTICE_HOURS * 60 * 60 * 1000;
 }
 
 /**

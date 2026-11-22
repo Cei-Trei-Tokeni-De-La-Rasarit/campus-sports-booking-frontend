@@ -4,6 +4,7 @@ import {Link, useParams, useSearchParams} from 'react-router';
 import {createBooking} from '../api/bookingApi.js';
 import {getFacility, getRegulation, listSlots} from '../api/facilityApi.js';
 import {
+  CANCELLATION_NOTICE_HOURS,
   formatDayMonth,
   formatTime,
   fromIsoDate,
@@ -196,6 +197,12 @@ export function BookingPage() {
               ? 'Butonul „Confirmă rezervarea” devine activ doar după bifarea regulamentului.'
               : 'Acest interval nu mai poate fi rezervat.'}
           </p>
+          {isBookable && (
+            <p className="booking-hint">
+              Poți anula rezervarea până cu {CANCELLATION_NOTICE_HOURS} de ore
+              înainte de începutul intervalului, din „Rezervările mele”.
+            </p>
+          )}
         </div>
 
         <section className="booking-card" aria-labelledby="rules-title">

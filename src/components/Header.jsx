@@ -79,6 +79,11 @@ export function Header() {
             Facilități
           </NavLink>
         )}
+        {user?.rol === 'administrator' && (
+          <NavLink to="/utilizatori" className="header-link">
+            Utilizatori
+          </NavLink>
+        )}
       </nav>
 
       <div className="header-account">

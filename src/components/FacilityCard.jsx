@@ -1,3 +1,5 @@
+import {Link} from 'react-router';
+
 import {formatSchedule} from '../utils/schedule.js';
 
 const STATUS_LABELS = {
@@ -7,7 +9,8 @@ const STATUS_LABELS = {
 };
 
 /**
- * Cardul unei facilități din listă, cu butoanele de editare și ștergere.
+ * Cardul unei facilități din listă, cu butoanele de editare și ștergere și
+ * linkul către regulamentul ei.
  * @param {Object} props
  * @param {Object} props.facility
  * @param {Object=} props.schedule Programul din API; lipsește dacă nu a
@@ -57,6 +60,12 @@ export function FacilityCard({facility, schedule, disabled, onEdit, onDelete}) {
         >
           Editează
         </button>
+        <Link
+          to={`/facilitati/${facility.id}/regulament`}
+          className="button button-secondary"
+        >
+          Regulament
+        </Link>
         {onDelete && (
           <button
             type="button"

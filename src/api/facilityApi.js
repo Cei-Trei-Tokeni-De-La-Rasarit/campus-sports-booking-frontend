@@ -66,6 +66,21 @@ export async function getRegulation(id) {
 }
 
 /**
+ * Înlocuiește regulamentul unei facilități (îl creează dacă nu are) și îl
+ * întoarce: {facilitate_id, text}. Serverul răspunde 403 dacă managerul nu
+ * are sala alocată.
+ * @param {(number|string)} id
+ * @param {string} text
+ * @return {Promise<Object>}
+ */
+export async function updateRegulation(id, text) {
+  return request(`${FACILITIES_PATH}/${encodeURIComponent(id)}/regulament`, {
+    method: 'PUT',
+    body: JSON.stringify({text}),
+  });
+}
+
+/**
  * Întoarce programul pe zile al unei facilități:
  * {durata_slot, zile: [{zi, deschidere, inchidere}]}, cu zilele de la luni
  * (1) la duminică (7). O zi care lipsește înseamnă că sala e închisă atunci.

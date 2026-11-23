@@ -12,10 +12,13 @@ import {MyBookingsPage} from './pages/MyBookingsPage.jsx';
 import {NewPasswordPage} from './pages/NewPasswordPage.jsx';
 import {NotificationsPage} from './pages/NotificationsPage.jsx';
 import {RegulationPage} from './pages/RegulationPage.jsx';
+import {UsersPage} from './pages/UsersPage.jsx';
 import {ReschedulePage} from './pages/ReschedulePage.jsx';
 
 // Rolurile care pot administra facilitățile.
 const FACILITY_ADMIN_ROLES = ['manager', 'administrator'];
+// Doar administratorul vede utilizatorii și le schimbă rolurile.
+const USER_ADMIN_ROLES = ['administrator'];
 
 /** Rutele aplicației. */
 export function App() {
@@ -67,6 +70,14 @@ export function App() {
           element={
             <RequireAuth roles={FACILITY_ADMIN_ROLES}>
               <RegulationPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/utilizatori"
+          element={
+            <RequireAuth roles={USER_ADMIN_ROLES}>
+              <UsersPage />
             </RequireAuth>
           }
         />

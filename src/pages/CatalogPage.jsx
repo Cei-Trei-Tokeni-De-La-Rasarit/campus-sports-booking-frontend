@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from 'react';
 
-import {listCatalog} from '../api/facilityApi.js';
+import {getSchedules, listCatalog} from '../api/facilityApi.js';
 import {CatalogCard} from '../components/CatalogCard.jsx';
 import {CatalogFilters} from '../components/CatalogFilters.jsx';
 
@@ -27,6 +27,8 @@ export function CatalogPage() {
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [search, setSearch] = useState('');
   const [sports, setSports] = useState([]);
+  // Programele sălilor active, {id: program}.
+  const [schedules, setSchedules] = useState({});
   // Rezultatul ultimei cereri, împreună cu filtrele pentru care a venit.
   const [result, setResult] = useState({query: null});
 
@@ -39,16 +41,19 @@ export function CatalogPage() {
     return () => clearTimeout(timer);
   }, [filters.search]);
 
-  // Lista „Sport” conține sporturile tuturor sălilor active.
+  // Lista „Sport” conține sporturile tuturor sălilor active. Programele lor
+  // se încarcă o singură dată, nu la fiecare schimbare a filtrelor.
   useEffect(() => {
     listCatalog()
-      .then((facilities) =>
+      .then((facilities) => {
         setSports(
           [...new Set(facilities.map((facility) => facility.sport))].sort(
             (first, second) => first.localeCompare(second, 'ro'),
           ),
-        ),
-      )
+        );
+        return getSchedules(facilities.map((facility) => facility.id));
+      })
+      .then(setSchedules)
       .catch(() => setSports([]));
   }, []);
 
@@ -138,6 +143,7 @@ export function CatalogPage() {
             <CatalogCard
               key={facility.id}
               facility={facility}
+              schedule={schedules[facility.id]}
               isAvailableToday={result.availableIds.has(facility.id)}
             />
           ))}

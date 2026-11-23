@@ -66,6 +66,52 @@ export async function getRegulation(id) {
 }
 
 /**
+ * Întoarce programul pe zile al unei facilități:
+ * {durata_slot, zile: [{zi, deschidere, inchidere}]}, cu zilele de la luni
+ * (1) la duminică (7). O zi care lipsește înseamnă că sala e închisă atunci.
+ * @param {(number|string)} id
+ * @return {Promise<Object>}
+ */
+export async function getSchedule(id) {
+  return request(`${FACILITIES_PATH}/${encodeURIComponent(id)}/program`);
+}
+
+/**
+ * Întoarce programele mai multor facilități, ca obiect {id: program}. O
+ * facilitate al cărei program nu a putut fi citit lipsește din rezultat, ca
+ * o singură eroare să nu ascundă programul celorlalte.
+ * @param {Array<number>} ids
+ * @return {Promise<Object<number, Object>>}
+ */
+export async function getSchedules(ids) {
+  const results = await Promise.allSettled(ids.map((id) => getSchedule(id)));
+  const schedules = {};
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      schedules[ids[index]] = result.value;
+    }
+  });
+  return schedules;
+}
+
+/**
+ * Înlocuiește programul unei facilități (manager sau administrator) și îl
+ * întoarce, împreună cu `rezervari_in_afara_programului`: câte rezervări
+ * viitoare au rămas în afara noului program.
+ * @param {number} id
+ * @param {{durata_slot: number,
+ *     zile: Array<{zi: number, deschidere: string, inchidere: string}>}}
+ *     schedule
+ * @return {Promise<Object>}
+ */
+export async function updateSchedule(id, schedule) {
+  return request(`${FACILITIES_PATH}/${id}/program`, {
+    method: 'PUT',
+    body: JSON.stringify(schedule),
+  });
+}
+
+/**
  * Adaugă o facilitate nouă și o întoarce, cu id-ul primit de la server.
  * @param {Object} facility
  * @return {Promise<Object>}

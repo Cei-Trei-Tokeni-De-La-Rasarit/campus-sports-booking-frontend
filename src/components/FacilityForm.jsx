@@ -1,5 +1,12 @@
 import {useState} from 'react';
 
+import {
+  toApiSchedule,
+  toFormSchedule,
+  validateScheduleDay,
+} from '../utils/schedule.js';
+import {ScheduleEditor} from './ScheduleEditor.jsx';
+
 const STATUS_OPTIONS = [
   {value: 'activa', label: 'Activă'},
   {value: 'mentenanta', label: 'În mentenanță'},
@@ -11,22 +18,35 @@ const EMPTY_FACILITY = {
   sport: '',
   locatie: '',
   capacitate: '',
-  program: '',
   status: 'activa',
 };
 
 /**
- * Formularul de adăugare și de editare a unei facilități.
+ * Formularul de adăugare și de editare a unei facilități, cu programul ei
+ * pe zile.
  * @param {Object} props
  * @param {?Object} props.facility Facilitatea editată sau null pentru una nouă.
+ * @param {?Object} props.schedule Programul din API al facilității editate
+ *     sau null pentru una nouă.
  * @param {boolean} props.isSaving Dacă cererea de salvare este în curs.
- * @param {function(Object): void} props.onSubmit
+ * @param {function(Object, Object): void} props.onSubmit Primește datele
+ *     facilității și programul, în formatul cerut de API.
  * @param {function(): void} props.onCancel
  */
-export function FacilityForm({facility, isSaving, onSubmit, onCancel}) {
+export function FacilityForm({
+  facility,
+  schedule,
+  isSaving,
+  onSubmit,
+  onCancel,
+}) {
   const [values, setValues] = useState(() =>
-    facility ? {...facility, program: facility.program ?? ''} : EMPTY_FACILITY,
+    facility ? {...facility} : EMPTY_FACILITY,
   );
+  const [scheduleValues, setScheduleValues] = useState(() =>
+    toFormSchedule(schedule),
+  );
+  const [scheduleErrors, setScheduleErrors] = useState({});
 
   function handleChange(event) {
     const {name, value} = event.target;
@@ -35,14 +55,27 @@ export function FacilityForm({facility, isSaving, onSubmit, onCancel}) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    onSubmit({
-      nume: values.nume.trim(),
-      sport: values.sport.trim(),
-      locatie: values.locatie.trim(),
-      capacitate: Number(values.capacitate),
-      program: values.program.trim() || null,
-      status: values.status,
-    });
+    const newScheduleErrors = {};
+    for (const day of scheduleValues.days) {
+      const error = validateScheduleDay(day, scheduleValues.slotMinutes);
+      if (error) {
+        newScheduleErrors[day.weekday] = error;
+      }
+    }
+    setScheduleErrors(newScheduleErrors);
+    if (Object.keys(newScheduleErrors).length > 0) {
+      return;
+    }
+    onSubmit(
+      {
+        nume: values.nume.trim(),
+        sport: values.sport.trim(),
+        locatie: values.locatie.trim(),
+        capacitate: Number(values.capacitate),
+        status: values.status,
+      },
+      toApiSchedule(scheduleValues),
+    );
   }
 
   return (
@@ -96,16 +129,6 @@ export function FacilityForm({facility, isSaving, onSubmit, onCancel}) {
           />
         </label>
         <label className="field">
-          Program (opțional)
-          <input
-            name="program"
-            value={values.program}
-            onChange={handleChange}
-            maxLength={200}
-            placeholder="Luni-Vineri 08:00-22:00"
-          />
-        </label>
-        <label className="field">
           Status
           <select name="status" value={values.status} onChange={handleChange}>
             {STATUS_OPTIONS.map((option) => (
@@ -116,6 +139,12 @@ export function FacilityForm({facility, isSaving, onSubmit, onCancel}) {
           </select>
         </label>
       </div>
+
+      <ScheduleEditor
+        value={scheduleValues}
+        errors={scheduleErrors}
+        onChange={setScheduleValues}
+      />
 
       <div className="form-actions">
         <button

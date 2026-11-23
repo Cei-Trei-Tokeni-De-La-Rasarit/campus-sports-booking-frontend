@@ -112,6 +112,12 @@
   background-color: var(--color-primary-light);
 }
 
+.alert-warning {
+  color: var(--color-warning-text);
+  background-color: var(--color-warning-background);
+  border: 1px solid var(--color-warning-border);
+}
+
 .empty-state {
   color: var(--color-text-muted);
 }
@@ -162,6 +168,85 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
+}
+
+/* Programul pe zile din formular */
+.schedule-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  margin: 24px 0 0;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.schedule-editor legend {
+  padding: 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.schedule-slot {
+  max-width: 240px;
+}
+
+.schedule-days {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schedule-day {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  gap: 4px 16px;
+  font-size: 14px;
+}
+
+.schedule-day .field-error {
+  grid-column: 2;
+}
+
+.schedule-day-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.schedule-day-hours {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-day-hours input {
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--color-text);
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-border-input);
+  border-radius: 6px;
+}
+
+.schedule-day-hours input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.schedule-day-closed {
+  color: var(--color-text-muted);
+}
+
+.schedule-editor .field-hint {
+  margin: 0;
+}
+
+.schedule-line {
+  display: block;
 }
 
 /* Lista de facilități */
@@ -425,6 +510,13 @@
 .calendar-title h1 {
   margin: 0 0 6px;
   font-size: 28px;
+}
+
+.calendar-schedule {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
 .calendar-subtitle {

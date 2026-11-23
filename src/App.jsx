@@ -9,6 +9,7 @@ import {FacilitiesPage} from './pages/FacilitiesPage.jsx';
 import {LoginPage} from './pages/LoginPage.jsx';
 import {MyBookingsPage} from './pages/MyBookingsPage.jsx';
 import {NotificationsPage} from './pages/NotificationsPage.jsx';
+import {RegulationPage} from './pages/RegulationPage.jsx';
 
 // Rolurile care pot administra facilitățile.
 const FACILITY_ADMIN_ROLES = ['manager', 'administrator'];
@@ -44,6 +45,14 @@ export function App() {
           element={
             <RequireAuth roles={FACILITY_ADMIN_ROLES}>
               <FacilitiesPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/facilitati/:id/regulament"
+          element={
+            <RequireAuth roles={FACILITY_ADMIN_ROLES}>
+              <RegulationPage />
             </RequireAuth>
           }
         />

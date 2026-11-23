@@ -32,6 +32,10 @@
   --color-blocked-background: #fef0c7;
   --color-blocked-border: #f8c77e;
   --color-blocked-text: #b54708;
+  /* Avertismentele (de ex. rezervări rămase în afara programului). */
+  --color-warning-background: #fef0c7;
+  --color-warning-border: #f8c77e;
+  --color-warning-text: #93370d;
 
   --color-border: #dbe1ea;
   --color-border-input: #e1e6ee;

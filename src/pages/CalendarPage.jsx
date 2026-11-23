@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router';
 
-import {getFacility, listSlots} from '../api/facilityApi.js';
+import {getFacility, getSchedule, listSlots} from '../api/facilityApi.js';
 import {WeekCalendar} from '../components/WeekCalendar.jsx';
+import {describeSchedule} from '../utils/schedule.js';
 import {addDays, formatRange, startOfWeek, toIsoDate} from '../utils/week.js';
 
 // Zilele lucrătoare se văd mereu; sâmbăta și duminica doar dacă au sloturi.
@@ -18,6 +19,8 @@ export function CalendarPage() {
   const {id} = useParams();
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [facility, setFacility] = useState({id: null});
+  // Programul sălii, împreună cu id-ul pentru care a venit.
+  const [schedule, setSchedule] = useState({id: null});
   // Sloturile ultimei cereri, împreună cu săptămâna pentru care au venit.
   const [result, setResult] = useState({query: null});
   const isValidId = VALID_ID.test(id);
@@ -30,6 +33,21 @@ export function CalendarPage() {
     getFacility(id)
       .then((data) => isCurrent && setFacility({id, data}))
       .catch((loadError) => isCurrent && setFacility({id, error: loadError}));
+    return () => {
+      isCurrent = false;
+    };
+  }, [id, isValidId]);
+
+  // Programul e doar informativ: dacă nu se încarcă, calendarul merge mai
+  // departe, fără el.
+  useEffect(() => {
+    if (!isValidId) {
+      return undefined;
+    }
+    let isCurrent = true;
+    getSchedule(id)
+      .then((data) => isCurrent && setSchedule({id, data}))
+      .catch(() => isCurrent && setSchedule({id, data: null}));
     return () => {
       isCurrent = false;
     };
@@ -85,6 +103,11 @@ export function CalendarPage() {
           {isFacilityLoading ? '' : `${facility.data.nume} – `}Calendar
           disponibilitate
         </h1>
+        {schedule.id === id && schedule.data && (
+          <p className="calendar-schedule">
+            Program: {describeSchedule(schedule.data)}
+          </p>
+        )}
         <div className="calendar-subtitle">
           <p>
             Săptămâna {formatRange(days[0], days[days.length - 1])} · apasă pe

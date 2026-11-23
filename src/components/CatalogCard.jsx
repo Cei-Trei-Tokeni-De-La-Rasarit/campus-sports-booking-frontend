@@ -1,14 +1,18 @@
 import {Link} from 'react-router';
 
+import {describeSchedule} from '../utils/schedule.js';
+
 /**
  * Cardul unei săli din catalog: fotografia, numele, disponibilitatea de azi,
- * detaliile și butonul spre calendar.
+ * detaliile, programul și butonul spre calendar.
  * @param {Object} props
  * @param {Object} props.facility
+ * @param {Object=} props.schedule Programul din API; lipsește cât timp se
+ *     încarcă sau dacă nu a putut fi încărcat.
  * @param {boolean} props.isAvailableToday Dacă sala mai are azi un interval
  *     liber care nu a început.
  */
-export function CatalogCard({facility, isAvailableToday}) {
+export function CatalogCard({facility, schedule, isAvailableToday}) {
   return (
     <article className="catalog-card">
       {/* API-ul nu are încă fotografii, așa că păstrăm locul din prototip. */}
@@ -28,6 +32,11 @@ export function CatalogCard({facility, isAvailableToday}) {
       <p className="catalog-card-details">
         {facility.sport} · {facility.locatie} · {facility.capacitate} locuri
       </p>
+      {schedule && (
+        <p className="catalog-card-details">
+          Program: {describeSchedule(schedule)}
+        </p>
+      )}
 
       <Link
         to={`/facilitati/${facility.id}/calendar`}

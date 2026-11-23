@@ -1,3 +1,5 @@
+import {formatSchedule} from '../utils/schedule.js';
+
 const STATUS_LABELS = {
   activa: 'Activă',
   mentenanta: 'În mentenanță',
@@ -8,12 +10,16 @@ const STATUS_LABELS = {
  * Cardul unei facilități din listă, cu butoanele de editare și ștergere.
  * @param {Object} props
  * @param {Object} props.facility
+ * @param {Object=} props.schedule Programul din API; lipsește dacă nu a
+ *     putut fi încărcat.
  * @param {boolean} props.disabled Dacă butoanele sunt blocate (cerere în curs).
  * @param {function(Object): void} props.onEdit
  * @param {?function(Object): void} props.onDelete Fără ea (null), butonul
  *     „Șterge” nu apare (de exemplu, pentru manager).
  */
-export function FacilityCard({facility, disabled, onEdit, onDelete}) {
+export function FacilityCard({facility, schedule, disabled, onEdit, onDelete}) {
+  const scheduleLines = schedule ? formatSchedule(schedule) : [];
+
   return (
     <article className="card facility-card">
       <div className="facility-card-header">
@@ -31,7 +37,15 @@ export function FacilityCard({facility, disabled, onEdit, onDelete}) {
         <dt>Capacitate</dt>
         <dd>{facility.capacitate} persoane</dd>
         <dt>Program</dt>
-        <dd>{facility.program ?? '—'}</dd>
+        <dd>
+          {!schedule && '—'}
+          {schedule && scheduleLines.length === 0 && 'Nestabilit'}
+          {scheduleLines.map((line) => (
+            <span key={line} className="schedule-line">
+              {line}
+            </span>
+          ))}
+        </dd>
       </dl>
 
       <div className="facility-card-actions">

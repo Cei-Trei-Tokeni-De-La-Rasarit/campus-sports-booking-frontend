@@ -18,6 +18,8 @@ export function LoginPage() {
   const [tab, setTab] = useState('login');
   // Pagina de unde a fost trimis utilizatorul, ca să se întoarcă acolo.
   const destination = location.state?.from ?? '/catalog';
+  // Mesajul de la pagina care a trimis aici (de exemplu, parola schimbată).
+  const message = location.state?.message ?? '';
 
   if (user) {
     return <Navigate to={destination} replace />;
@@ -41,6 +43,11 @@ export function LoginPage() {
         {sessionExpired && (
           <p className="alert alert-info" role="status">
             Sesiunea a expirat. Autentifică-te din nou.
+          </p>
+        )}
+        {message && (
+          <p className="alert alert-success" role="status">
+            {message}
           </p>
         )}
 

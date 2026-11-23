@@ -6,8 +6,10 @@ import {BookingPage} from './pages/BookingPage.jsx';
 import {CalendarPage} from './pages/CalendarPage.jsx';
 import {CatalogPage} from './pages/CatalogPage.jsx';
 import {FacilitiesPage} from './pages/FacilitiesPage.jsx';
+import {ForgotPasswordPage} from './pages/ForgotPasswordPage.jsx';
 import {LoginPage} from './pages/LoginPage.jsx';
 import {MyBookingsPage} from './pages/MyBookingsPage.jsx';
+import {NewPasswordPage} from './pages/NewPasswordPage.jsx';
 import {NotificationsPage} from './pages/NotificationsPage.jsx';
 
 // Rolurile care pot administra facilitățile.
@@ -23,6 +25,9 @@ export function App() {
         <Route path="/" element={<Navigate to="/catalog" replace />} />
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/autentificare" element={<LoginPage />} />
+        <Route path="/resetare-parola" element={<ForgotPasswordPage />} />
+        {/* Adresa din linkul trimis pe email de backend (KAN-111). */}
+        <Route path="/parola-noua" element={<NewPasswordPage />} />
         <Route
           path="/rezervari"
           element={

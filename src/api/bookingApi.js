@@ -38,3 +38,19 @@ export async function createBooking(slotId, rulesAccepted) {
 export async function cancelBooking(bookingId) {
   return request(`/rezervari/${bookingId}`, {method: 'DELETE'});
 }
+
+/**
+ * Mută o rezervare a utilizatorului autentificat pe alt slot din aceeași sală
+ * și întoarce rezervarea mutată. Serverul răspunde 400 dacă au rămas mai
+ * puțin de 24 de ore sau slotul e din altă sală și 409 dacă slotul nu mai e
+ * liber sau rezervarea s-ar suprapune cu alta.
+ * @param {number} bookingId
+ * @param {number} slotId Slotul nou.
+ * @return {Promise<Object>}
+ */
+export async function rescheduleBooking(bookingId, slotId) {
+  return request(`/rezervari/${bookingId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({slot_id: slotId}),
+  });
+}

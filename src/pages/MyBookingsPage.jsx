@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {Link} from 'react-router';
+import {Link, useLocation} from 'react-router';
 
 import {cancelBooking, listMyBookings} from '../api/bookingApi.js';
 import {getFacility} from '../api/facilityApi.js';
@@ -37,13 +37,14 @@ async function loadBookings() {
 }
 
 /**
- * Butoanele de anulare ale unei rezervări viitoare: întâi „Anulează”, apoi
- * confirmarea. Dacă au rămas mai puțin de 24 de ore, doar un text explicativ.
+ * Butoanele unei rezervări viitoare: „Reprogramează” și „Anulează”, cu
+ * confirmarea anulării. Ambele se pot face doar cu cel puțin 24 de ore
+ * înainte; altfel rămâne doar un text explicativ.
  * @param {Object} props
  * @param {Object} props.booking
  * @param {function(number): Promise<void>} props.onCancel
  */
-function CancelActions({booking, onCancel}) {
+function BookingActions({booking, onCancel}) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [error, setError] = useState(null);
@@ -51,7 +52,8 @@ function CancelActions({booking, onCancel}) {
   if (!canBeCancelled(booking.slot, new Date())) {
     return (
       <p className="my-booking-hint">
-        Se poate anula până cu {CANCELLATION_NOTICE_HOURS} de ore înainte.
+        Se poate anula sau reprograma până cu {CANCELLATION_NOTICE_HOURS} de ore
+        înainte.
       </p>
     );
   }
@@ -93,6 +95,12 @@ function CancelActions({booking, onCancel}) {
         </div>
       ) : (
         <div className="my-booking-actions">
+          <Link
+            to={`/rezervari/${booking.id}/reprogramare`}
+            className="button button-primary"
+          >
+            Reprogramează
+          </Link>
           <button
             type="button"
             className="button booking-back"
@@ -113,7 +121,7 @@ function CancelActions({booking, onCancel}) {
 
 /**
  * O rezervare din listă: sala, ziua, intervalul și starea; rezervările
- * viitoare au și butonul de anulare.
+ * viitoare au și butoanele de reprogramare și anulare.
  * @param {Object} props
  * @param {Object} props.booking
  * @param {?Object} props.facility
@@ -137,7 +145,7 @@ function BookingItem({booking, facility, onCancel}) {
         </span>
         <span className={`availability ${badge.className}`}>{badge.label}</span>
       </div>
-      {onCancel && <CancelActions booking={booking} onCancel={onCancel} />}
+      {onCancel && <BookingActions booking={booking} onCancel={onCancel} />}
     </li>
   );
 }
@@ -176,8 +184,10 @@ function BookingSection({title, bookings, facilities, empty, onCancel}) {
 
 /** Pagina „Rezervările mele”: rezervările viitoare și istoricul. */
 export function MyBookingsPage() {
+  const location = useLocation();
   const [result, setResult] = useState(null);
-  const [notice, setNotice] = useState(null);
+  // Mesajul paginii care a trimis aici (de exemplu, după o reprogramare).
+  const [notice, setNotice] = useState(() => location.state?.message ?? null);
 
   useEffect(() => {
     let isCurrent = true;

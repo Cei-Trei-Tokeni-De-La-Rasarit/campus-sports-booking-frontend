@@ -12,6 +12,7 @@ import {MyBookingsPage} from './pages/MyBookingsPage.jsx';
 import {NewPasswordPage} from './pages/NewPasswordPage.jsx';
 import {NotificationsPage} from './pages/NotificationsPage.jsx';
 import {RegulationPage} from './pages/RegulationPage.jsx';
+import {ReschedulePage} from './pages/ReschedulePage.jsx';
 
 // Rolurile care pot administra facilitățile.
 const FACILITY_ADMIN_ROLES = ['manager', 'administrator'];
@@ -34,6 +35,14 @@ export function App() {
           element={
             <RequireAuth>
               <MyBookingsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/rezervari/:id/reprogramare"
+          element={
+            <RequireAuth>
+              <ReschedulePage />
             </RequireAuth>
           }
         />

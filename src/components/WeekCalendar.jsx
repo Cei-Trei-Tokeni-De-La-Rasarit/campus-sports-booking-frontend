@@ -13,10 +13,17 @@ import {
  * @param {Object} props
  * @param {?Object} props.slot Slotul sau null dacă nu există interval aici.
  * @param {Date} props.now
+ * @param {?function(Object): void} props.onSelect La reprogramare: primește
+ *     slotul liber ales; fără ea, un slot liber duce la rezervare.
+ * @param {?number} props.selectedSlotId Slotul ales la reprogramare.
+ * @param {?number} props.currentSlotId Slotul rezervării care se mută.
  */
-function SlotCell({slot, now}) {
+function SlotCell({slot, now, onSelect, selectedSlotId, currentSlotId}) {
   if (!slot) {
     return <td />;
+  }
+  if (slot.id === currentSlotId) {
+    return <td className="calendar-cell-current">Rezervarea ta</td>;
   }
   if (slot.stare === 'rezervat') {
     return <td className="calendar-cell-busy">Ocupat</td>;
@@ -32,6 +39,29 @@ function SlotCell({slot, now}) {
   // Un slot liber care a început deja nu se mai poate rezerva.
   if (hasStarted(slot, now)) {
     return <td className="calendar-cell-past">Încheiat</td>;
+  }
+  // La reprogramare, un interval liber se alege; mutarea se confirmă separat.
+  if (onSelect) {
+    const isSelected = slot.id === selectedSlotId;
+    return (
+      <td
+        className={
+          isSelected
+            ? 'calendar-cell-free calendar-cell-selected'
+            : 'calendar-cell-free'
+        }
+      >
+        <button
+          type="button"
+          className="calendar-cell-link calendar-cell-button"
+          aria-label={`Alege intervalul ${formatTime(slot.ora_start)} – ${formatTime(slot.ora_sfarsit)} din ${slot.data}`}
+          aria-pressed={isSelected}
+          onClick={() => onSelect(slot)}
+        >
+          {isSelected ? 'Ales' : 'Liber'}
+        </button>
+      </td>
+    );
   }
   // Un interval liber duce la pagina de confirmare a rezervării.
   return (
@@ -53,8 +83,20 @@ function SlotCell({slot, now}) {
  * @param {Array<Date>} props.days Zilele afișate, în ordine.
  * @param {Array<Object>} props.slots Sloturile din API pentru aceste zile.
  * @param {Date} props.now Momentul de acum, pentru sloturile începute.
+ * @param {?function(Object): void=} props.onSelect Doar la reprogramare:
+ *     intervalele libere devin butoane care aleg slotul.
+ * @param {?number=} props.selectedSlotId Slotul ales la reprogramare.
+ * @param {?number=} props.currentSlotId Slotul rezervării care se mută,
+ *     marcat „Rezervarea ta”.
  */
-export function WeekCalendar({days, slots, now}) {
+export function WeekCalendar({
+  days,
+  slots,
+  now,
+  onSelect = null,
+  selectedSlotId = null,
+  currentSlotId = null,
+}) {
   // Câte un rând pentru fiecare interval orar care apare în săptămână.
   const intervals = [
     ...new Map(
@@ -110,6 +152,9 @@ export function WeekCalendar({days, slots, now}) {
                     ) ?? null
                   }
                   now={now}
+                  onSelect={onSelect}
+                  selectedSlotId={selectedSlotId}
+                  currentSlotId={currentSlotId}
                 />
               ))}
             </tr>

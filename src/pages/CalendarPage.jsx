@@ -1,14 +1,12 @@
 import {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router';
 
-import {getFacility, getSchedule, listSlots} from '../api/facilityApi.js';
+import {getFacility, getSchedule} from '../api/facilityApi.js';
 import {WeekCalendar} from '../components/WeekCalendar.jsx';
+import {WeekNavigation} from '../components/WeekNavigation.jsx';
+import {useWeekSlots} from '../hooks/useWeekSlots.js';
 import {describeSchedule} from '../utils/schedule.js';
-import {addDays, formatRange, startOfWeek, toIsoDate} from '../utils/week.js';
-
-// Zilele lucrătoare se văd mereu; sâmbăta și duminica doar dacă au sloturi.
-const WORK_DAYS = 5;
-const WEEK_DAYS = 7;
+import {formatRange} from '../utils/week.js';
 
 // Un id de facilitate e un număr întreg pozitiv; altfel nu trimitem cererea.
 const VALID_ID = /^[1-9]\d{0,9}$/;
@@ -17,13 +15,13 @@ const NOT_FOUND_MESSAGE = 'Facilitatea nu există.';
 /** Pagina Calendar: sloturile unei facilități, pe săptămâni. */
 export function CalendarPage() {
   const {id} = useParams();
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [facility, setFacility] = useState({id: null});
   // Programul sălii, împreună cu id-ul pentru care a venit.
   const [schedule, setSchedule] = useState({id: null});
-  // Sloturile ultimei cereri, împreună cu săptămâna pentru care au venit.
-  const [result, setResult] = useState({query: null});
   const isValidId = VALID_ID.test(id);
+  const {days, slots, isLoading, error, previousWeek, nextWeek} = useWeekSlots(
+    isValidId ? id : null,
+  );
 
   useEffect(() => {
     if (!isValidId) {
@@ -53,27 +51,6 @@ export function CalendarPage() {
     };
   }, [id, isValidId]);
 
-  const from = toIsoDate(weekStart);
-  const to = toIsoDate(addDays(weekStart, WEEK_DAYS - 1));
-  const query = `${id}|${from}|${to}`;
-
-  useEffect(() => {
-    if (!isValidId) {
-      return undefined;
-    }
-    let isCurrent = true;
-    const [facilityId, firstDay, lastDay] = query.split('|');
-    listSlots(facilityId, firstDay, lastDay)
-      .then((slots) => isCurrent && setResult({query, slots}))
-      .catch(
-        (loadError) =>
-          isCurrent && setResult({query, error: loadError.message}),
-      );
-    return () => {
-      isCurrent = false;
-    };
-  }, [query, isValidId]);
-
   const isFacilityLoading = facility.id !== id;
   if (!isValidId || (!isFacilityLoading && facility.error)) {
     return (
@@ -85,16 +62,6 @@ export function CalendarPage() {
       </main>
     );
   }
-
-  const isLoading = result.query !== query;
-  const slots = result.slots ?? [];
-  const hasWeekend = slots.some(
-    (slot) => slot.data > toIsoDate(addDays(weekStart, WORK_DAYS - 1)),
-  );
-  const days = Array.from(
-    {length: hasWeekend ? WEEK_DAYS : WORK_DAYS},
-    (_, i) => addDays(weekStart, i),
-  );
 
   return (
     <main className="calendar-page">
@@ -113,22 +80,7 @@ export function CalendarPage() {
             Săptămâna {formatRange(days[0], days[days.length - 1])} · apasă pe
             un interval liber ca să îl rezervi.
           </p>
-          <div className="calendar-week-nav">
-            <button
-              type="button"
-              className="button button-secondary"
-              onClick={() => setWeekStart(addDays(weekStart, -WEEK_DAYS))}
-            >
-              ← Săptămâna anterioară
-            </button>
-            <button
-              type="button"
-              className="button button-secondary"
-              onClick={() => setWeekStart(addDays(weekStart, WEEK_DAYS))}
-            >
-              Săptămâna următoare →
-            </button>
-          </div>
+          <WeekNavigation onPrevious={previousWeek} onNext={nextWeek} />
         </div>
       </div>
 
@@ -143,13 +95,13 @@ export function CalendarPage() {
 
       {isLoading && <p className="empty-state">Se încarcă intervalele…</p>}
 
-      {!isLoading && result.error && (
+      {error && (
         <p className="alert alert-error" role="alert">
-          {result.error}
+          {error}
         </p>
       )}
 
-      {!isLoading && !result.error && slots.length === 0 && (
+      {!isLoading && !error && slots.length === 0 && (
         <p className="empty-state">Nu există intervale în această săptămână.</p>
       )}
 

@@ -577,6 +577,132 @@
   cursor: pointer;
 }
 
+/* Clopoțelul cu notificări (ecranul 3-notificari din Figma) */
+.header-bell {
+  position: relative;
+  display: flex;
+}
+
+.header-bell-count {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 2px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 13px;
+  text-align: center;
+  color: var(--color-text-on-primary);
+  background-color: var(--color-error);
+  border-radius: 7px;
+}
+
+/* Notificările (ecranul 3-notificari din Figma) */
+.notifications-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1080px;
+  padding: 32px 60px 48px;
+}
+
+.notifications-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  max-width: 960px;
+}
+
+.notifications-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.notifications-mark-all {
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.notifications-mark-all:hover {
+  text-decoration: underline;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 960px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notification-content {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  column-gap: 14px;
+  align-items: start;
+  width: 100%;
+  padding: 18px;
+  font: inherit;
+  text-align: left;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+button.notification-content {
+  cursor: pointer;
+}
+
+.notification-unread .notification-content {
+  background-color: var(--color-input-background);
+}
+
+.notification-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  border-radius: 50%;
+}
+
+.notification-unread .notification-dot {
+  background-color: var(--color-text);
+}
+
+.notification-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification-title {
+  font-size: 16px;
+}
+
+.notification-unread .notification-title {
+  font-weight: 700;
+}
+
+.notification-message {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.notification-time {
+  font-size: 13px;
+  color: var(--color-text-placeholder);
+  white-space: nowrap;
+}
+
 /* Autentificarea (ecranul A-autentificare din Figma) */
 /* Cardul stă în mijlocul ecranului, sub bara de sus (56 px), ca în Figma. */
 .auth-page {
@@ -949,8 +1075,27 @@
   .catalog-page,
   .calendar-page,
   .booking-page,
-  .my-bookings-page {
+  .my-bookings-page,
+  .notifications-page {
     padding: 24px 16px;
+  }
+
+  /* Pe telefon, bara de sus păstrează doar meniul, clopoțelul și „Ieșire”. */
+  .header {
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .header-nav {
+    gap: 12px;
+  }
+
+  .header-account {
+    gap: 12px;
+  }
+
+  .header-user {
+    display: none;
   }
 
   .auth-page {

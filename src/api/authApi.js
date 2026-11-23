@@ -27,6 +27,34 @@ export async function register(account) {
 }
 
 /**
+ * Cere un link pentru resetarea parolei, trimis pe email. Serverul întoarce
+ * același {mesaj} și pentru adresele fără cont, ca să nu se afle ce conturi
+ * există.
+ * @param {string} email
+ * @return {Promise<{mesaj: string}>}
+ */
+export async function requestPasswordReset(email) {
+  return request('/auth/resetare-parola', {
+    method: 'POST',
+    body: JSON.stringify({email}),
+  });
+}
+
+/**
+ * Schimbă parola cu token-ul din linkul primit pe email. Serverul răspunde
+ * 400 dacă token-ul nu există, a expirat sau a fost deja folosit.
+ * @param {string} token
+ * @param {string} newPassword
+ * @return {Promise<{mesaj: string}>}
+ */
+export async function confirmPasswordReset(token, newPassword) {
+  return request('/auth/resetare-parola/confirmare', {
+    method: 'POST',
+    body: JSON.stringify({token, parola_noua: newPassword}),
+  });
+}
+
+/**
  * Întoarce utilizatorul căruia îi aparține token-ul salvat. Un token expirat
  * dă eroare 401, pe care o tratează cine apelează funcția.
  * @return {Promise<Object>}

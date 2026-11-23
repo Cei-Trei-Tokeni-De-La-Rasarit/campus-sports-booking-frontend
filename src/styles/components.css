@@ -961,6 +961,27 @@ button.notification-content {
   border-radius: 8px;
 }
 
+/* Resetarea parolei: textul de sub titlu și linkurile din card. */
+.auth-intro {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.auth-forgot {
+  align-self: flex-end;
+  margin-top: -8px;
+  font-size: 13px;
+  color: var(--color-primary);
+}
+
+.auth-link {
+  align-self: center;
+  font-size: 14px;
+  color: var(--color-primary);
+}
+
 /* Celulele libere din calendar duc la confirmarea rezervării. */
 .calendar-cell-link {
   display: flex;

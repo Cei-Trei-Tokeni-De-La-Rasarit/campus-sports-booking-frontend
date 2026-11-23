@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {Link} from 'react-router';
 
 import {validateEmail} from '../utils/validation.js';
 
@@ -69,6 +70,9 @@ export function LoginForm({onSubmit}) {
         />
         {errors.parola && <span className="field-error">{errors.parola}</span>}
       </label>
+      <Link to="/resetare-parola" className="auth-forgot">
+        Ai uitat parola?
+      </Link>
 
       {serverError && (
         <p className="alert alert-error" role="alert">

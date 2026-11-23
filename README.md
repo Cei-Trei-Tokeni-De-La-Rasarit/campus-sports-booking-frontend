@@ -78,9 +78,39 @@ npm run lint
 La fiecare pull request, ESLint și Prettier rulează automat pe GitHub.
 Fluxul complet (ticket, branch, pull request) este în [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Teste end-to-end
+
+Testele din `e2e/` folosesc [Playwright](https://playwright.dev/): pornesc
+backend-ul și frontend-ul împreună și parcurg aplicația într-un browser, ca un
+utilizator (autentificare, rezervare din calendar, anulare, accesul după rol).
+Așa prind și problemele dintre cele două componente, pe care testele din
+backend nu le văd.
+
+**Pregătire (o singură dată):**
+1. Backend-ul instalat după README-ul lui, în folderul vecin cu frontend-ul
+   (`../backend` sau `../campus-sports-booking-backend`), cu mediul virtual
+   `.venv` și `TEST_DATABASE_URL` în `.env`. Dacă e în alt folder, setează
+   `$env:E2E_BACKEND_DIR = "D:/proiecte/campus-sports-booking-backend"`.
+2. Browserul folosit de teste (aproximativ 120 MB):
+   ```powershell
+   npx playwright install chromium
+   ```
+
+**Rulare:**
+```powershell
+npm run test:e2e
+```
+- Playwright pornește singur backend-ul pe portul 8001 (cu baza de test
+  reîncărcată din `seed.sql`) și frontend-ul pe portul 5174, deci merg în
+  paralel cu `npm run dev`. Serverele se opresc la final.
+- Baza de test e golită la fiecare rulare; nu folosi pentru ea baza echipei.
+- La un test picat, în `test-results/` rămâne o înregistrare a pașilor:
+  `npx playwright show-trace test-results/<numele-testului>/trace.zip`.
+
 ## Structura proiectului
 
 ```
+e2e/            testele end-to-end (Playwright)
 src/
   api/          cererile către backend (request.js trimite token-ul)
   auth/         autentificarea: AuthContext și RequireAuth

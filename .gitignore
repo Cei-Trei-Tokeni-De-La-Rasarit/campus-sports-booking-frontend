@@ -147,3 +147,9 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Rezultatele testelor end-to-end (Playwright)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
